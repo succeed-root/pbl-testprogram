@@ -62,24 +62,42 @@ def line_similarity(s1: str, s2: str) -> float:
     lines2 = [re.sub(r"\s+", "", l) for l in _clean_lines(s2)]
     return SequenceMatcher(None, lines1, lines2).ratio()
 
+def compare_files(original_path: str, converted_path: str) -> tuple[float, float]:
+    """Return similarity scores for two files."""
+    with open(original_path, "r", encoding="utf-8") as f:
+        original_code = f.read()
+    with open(converted_path, "r", encoding="utf-8") as f:
+        converted_code = f.read()
+    char_score = char_similarity(original_code, converted_code)
+    line_score = line_similarity(original_code, converted_code)
+    return char_score, line_score
 
-if __name__ == "__main__":
+
+def main(argv: list[str] | None = None) -> int:
     import argparse
     import sys
 
-    parser = argparse.ArgumentParser(description="Compute similarity metrics between two files")
+    parser = argparse.ArgumentParser(
+        description="Compute similarity metrics between two files"
+    )
     parser.add_argument("original", help="Original code file path")
     parser.add_argument("converted", help="Converted/generated code file path")
-    args = parser.parse_args()
 
-    with open(args.original, "r", encoding="utf-8") as f:
-        original_code = f.read()
-    with open(args.converted, "r", encoding="utf-8") as f:
-        converted_code = f.read()
+    if argv is None:
+        argv = sys.argv[1:]
+    if len(argv) != 2:
+        parser.print_usage()
+        return 1
 
-    char_score = char_similarity(original_code, converted_code)
-    line_score = line_similarity(original_code, converted_code)
+    args = parser.parse_args(argv)
+
+    char_score, line_score = compare_files(args.original, args.converted)
 
     print(f"Character similarity: {char_score:.4f}")
     print(f"Line similarity: {line_score:.4f}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
 
