@@ -62,7 +62,6 @@ def line_similarity(s1: str, s2: str) -> float:
     lines2 = [re.sub(r"\s+", "", l) for l in _clean_lines(s2)]
     return SequenceMatcher(None, lines1, lines2).ratio()
 
-
 def compare_files(original_path: str, converted_path: str) -> tuple[float, float]:
     """Return similarity scores for two files."""
     with open(original_path, "r", encoding="utf-8") as f:

@@ -19,4 +19,3 @@ from similarity import compare_files
 char, line = compare_files("original.mag", "converted.mag")
 print(char, line)
 ```
-
