@@ -63,14 +63,23 @@ def line_similarity(s1: str, s2: str) -> float:
     return SequenceMatcher(None, lines1, lines2).ratio()
 
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> int:
     import argparse
     import sys
 
-    parser = argparse.ArgumentParser(description="Compute similarity metrics between two files")
+    parser = argparse.ArgumentParser(
+        description="Compute similarity metrics between two files"
+    )
     parser.add_argument("original", help="Original code file path")
     parser.add_argument("converted", help="Converted/generated code file path")
-    args = parser.parse_args()
+
+    if argv is None:
+        argv = sys.argv[1:]
+    if len(argv) != 2:
+        parser.print_usage()
+        return 1
+
+    args = parser.parse_args(argv)
 
     with open(args.original, "r", encoding="utf-8") as f:
         original_code = f.read()
@@ -82,4 +91,9 @@ if __name__ == "__main__":
 
     print(f"Character similarity: {char_score:.4f}")
     print(f"Line similarity: {line_score:.4f}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
 
